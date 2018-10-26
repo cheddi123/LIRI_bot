@@ -1,7 +1,10 @@
- var dotenv =require("dotenv").config();
- var keys = require("./keys.js")
- var Spotify = require('node-spotify-api');
- var moment = require('moment');
+var dotenv = require("dotenv").config();
+var keys = require("./keys.js")
+var Spotify = require('node-spotify-api');
+var moment = require('moment');
+var request = require("request");
+var fs = require("fs");
+var bandsintown = require("bandsintown")
 //  console.log(dotenv)
 moment().format();
 
@@ -28,63 +31,100 @@ for (var i = 3; i < nodeArgs.length; i++) {
 if (input1 === "movie-this") {
     ombd(input2);
 
-}else if(input1==="spotify-this"){
+} else if (input1 === "spotify-this") {
     songify(input2)
+} else if (input1 === "concert-this") {
+    BandsInTown(input2)
+}else if (input1==="do-what-it-says"){
+      do_what_it_says(input1,input2)
 }
 
 
 
 
 
+function songify(search) {
+    var spotify = new Spotify(keys.spotify);
+    spotify.search({ type: 'track', query: search }, function (err, data) {
+        if (err) {
+            return console.log('Error occurred: ' + err);
+        }
+        var searching =  data.tracks.items[0]
+        var artistinfoArray = [
+            "Artists: " + searching.artists[0].name,
+            "Name of song: " + searching.name,
+            "Album: " + searching.album.name,
+            
+        ].join("\n");
 
-function songify(search){
-var spotify = new Spotify(keys.spotify);
-spotify.search({ type: 'track', query: search }, function(err, data) {
-  if (err) {
-    return console.log('Error occurred: ' + err);
-  }
-  var search=data.tracks.items[0]
-console.log("Name: " + search.artists[0].name); 
-console.log("Name of song: "+ search.name) 
-console.log("Album: "+ search.album.name); 
-});
+        console.log(artistinfoArray)
+
+    });
 }
 
-
-// Get all elements in process.argv, starting from index 3 to the end
-// Join them into a string to get the space delimited address
 
 
 function ombd(search) {
-   var request = require("request");
+    var request = require("request");
     // Then run a request to the OMDB API with the movie specified
     request("http://www.omdbapi.com/?t=" + search + "&y=&plot=short&apikey=trilogy", function (error, response, body) {
 
         // If the request is successful (i.e. if the response status code is 200)
         if (!error && response.statusCode === 200 && search) {
 
-            console.log("Title : " + JSON.parse(body).Title);
-            console.log("Year movie released : " + JSON.parse(body).Year);
-            console.log("The movie's rating is  : " + JSON.parse(body).imdbRating);
-            console.log("Rotten Tomatoes Ratings: " + JSON.parse(body).Ratings[1].Value);
-            console.log("Country : " + JSON.parse(body).Country);
-            console.log("Language : " + JSON.parse(body).Language);
-            console.log("Plot : " + JSON.parse(body).Plot);
-            console.log("Actors : " + JSON.parse(body).Actors);
+            var movieinfoArray = [
+                "Title : " + JSON.parse(body).Title,
+                "Year movie released : " + JSON.parse(body).Year,
+                "The movie's rating is  : " + JSON.parse(body).imdbRating,
+                "Rotten Tomatoes Ratings: " + JSON.parse(body).Ratings[1].Value,
+                "Country : " + JSON.parse(body).Country,
+                "Language : " + JSON.parse(body).Language,
+                "Plot : " + JSON.parse(body).Plot,
+                "Actors : " + JSON.parse(body).Actors,
+            ].join("\n")
+            console.log(movieinfoArray);
+        } else {
 
-            // console.log('body: ', JSON.parse(body));
-        } else{
-            
-            console.log("If you haven't watched ' Mr. Nobody, ' then you should: http://www.imdb.com/title/tt0485947/ ")
-            console.log("It's on Netflix!")
+            console.log("If you haven't watched ' Mr. Nobody, ' then you should: http://www.imdb.com/title/tt0485947/ ", "\n\n", "It's on Netflix!")
+
         }
     });
 }
 
-var bandsintown = require('bandsintown')('27633350eff9fa94ccbc54187d5e0476');
- 
-bandsintown
-  .getArtistEventList('Skrillex')
-  .then(function(events) {
-    // return array of events
-  });
+function BandsInTown(search) {
+
+    var URL = "https://rest.bandsintown.com/artists/" + search + "/events?app_id=codingbootcamp";
+    request(URL, function (error, response, body) {
+        var data = JSON.parse(body)
+        //    console.log(data)
+        var date = data[0].datetime;
+        var convertDate = moment(date, "YYYY/MM/DD").format("MM/DD/YYYY");
+        if (!error && response.statusCode === 200 && search) {
+
+        var bandsintownInfoArray = [
+            "Name of venue: " + data[0].venue.name,
+            "Name of city: " + data[0].venue.city,
+            "Date of Event: " + convertDate
+        ].join("\n")
+        console.log(bandsintownInfoArray)
+    }else{ console.log('Error occurred: ' + error);
+
+    }
+
+    });
+}
+
+ function do_what_it_says (){
+    fs.readFile("random.txt","utf8",function(err, data){
+        if (err){ 
+			return console.log(err);
+		}
+
+		var dataArr = data.split(',');
+      var command2 =dataArr[0]
+	  var command3= dataArr[3]
+	});
+
+    
+ }
+
