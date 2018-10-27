@@ -119,8 +119,8 @@ function BandsInTown(search) {
             ].join("\n")
             console.log(bandsintownInfoArray)
             // Append showData and the divider to log.txt, print showData to the console
-            fs.appendFile("log.txt", bandsintownInfoArray + "\n\n" + "Log Time :" + moment2 + divider, function (err) {
-                if (err) throw err;
+            fs.appendFile("log.txt", bandsintownInfoArray + "\n\n" + "Log Time :" + moment2 + divider, function (error) {
+                if (error) throw error;
             });
         } else {
             console.log('Error occurred: ' + error);
@@ -129,6 +129,7 @@ function BandsInTown(search) {
 
     });
 }
+
 // function to receive inputs from random.txt file and then execute a function based on the input
 function do_what_it_says() {
     fs.readFile("random.txt", "utf8", function (err, data) {
@@ -140,13 +141,13 @@ function do_what_it_says() {
 
         // console.log(dataArr[0],dataArr[1])
         if (dataArr[0] === "spotify-this-song") {
-            songify(dataArr[1])
+            songify(dataArr[1]);
         } else if (dataArr[0] === "movie-this") {
-            ombd(dataArr[1])
-        }else if(dataArr[0]==="concert-this") {
-            BandsInTown(dataArr[1])
+            ombd(dataArr[1]);
+        }else if(dataArr[0]=== "concert-this") {
+            BandsInTown(dataArr[1]);
+            console.log(dataArr[0],dataArr[1])
         }
 
     });
 }
-
