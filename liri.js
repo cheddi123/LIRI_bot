@@ -1,15 +1,15 @@
-var dotenv = require("dotenv").config();
+ require("dotenv").config();
 var keys = require("./keys.js")
 var Spotify = require('node-spotify-api');
 var moment = require('moment');
 var request = require("request");
 var fs = require("fs");
 var bandsintown = require("bandsintown")
-//  console.log(dotenv)
-moment().format();
 
+   // `divider` will be used as a spacer between the data we print in log.txt
+   var divider = "\n------------------------------------------------------------\n\n";
 
-var input1 = process.argv[2];
+var input1 = process.argv[2]; 
 
 // Store all of the arguments in an array
 var nodeArgs = process.argv;
@@ -28,7 +28,7 @@ for (var i = 3; i < nodeArgs.length; i++) {
     }
 }
 
-
+// switch statement to receive different input calls
 switch(input1){
     case "movie-this": ombd(input2);break;
     case "spotify-this":songify(input2);break;
@@ -38,13 +38,15 @@ switch(input1){
 }
 
 
-
+// function to information from spotify
 function songify(search) {
     var spotify = new Spotify(keys.spotify);
     spotify.search({ type: 'track', query: search }, function (err, data) {
         if (err) {
-            return console.log('Error occurred: ' + err);
+            return console.log('Error occurred: ' + err , songify("The Sign"));
+            
         }
+
         var searching = data.tracks.items[0]
         var artistinfoArray = [
             "Artists: " + searching.artists[0].name,
@@ -52,14 +54,20 @@ function songify(search) {
             "Album: " + searching.album.name,
 
         ].join("\n");
-
         console.log(artistinfoArray)
+      
+   // Append showData and the divider to log.txt, print showData to the console
+   fs.appendFile("log.txt", artistinfoArray + divider, function(err) {
+    if (err) throw err;
+  });
+        
 
     });
+    
 }
 
 
-
+// function to get inforamtion from ombd
 function ombd(search) {
     var request = require("request");
     // Then run a request to the OMDB API with the movie specified
@@ -77,8 +85,14 @@ function ombd(search) {
                 "Language : " + JSON.parse(body).Language,
                 "Plot : " + JSON.parse(body).Plot,
                 "Actors : " + JSON.parse(body).Actors,
-            ].join("\n")
+            ].join("\n\n")
             console.log(movieinfoArray);
+            // Append showData and the divider to log.txt, print showData to the console
+   fs.appendFile("log.txt", movieinfoArray + divider, function(err) {
+    if (err) throw err;
+  });
+           
+
         } else {
 
             console.log("If you haven't watched ' Mr. Nobody, ' then you should: http://www.imdb.com/title/tt0485947/ ", "\n\n", "It's on Netflix!")
@@ -87,9 +101,10 @@ function ombd(search) {
     });
 }
 
+// function to get information about bands in town
 function BandsInTown(search) {
-
-    var URL = "https://rest.bandsintown.com/artists/" + search + "/events?app_id=codingbootcamp";
+    var bandKey = keys.bands_in_town
+    var URL = "https://rest.bandsintown.com/artists/" + search + "/events?app_id="+bandKey;
     request(URL, function (error, response, body) {
         var data = JSON.parse(body)
         //    console.log(data)
@@ -103,6 +118,10 @@ function BandsInTown(search) {
                 "Date of Event: " + convertDate
             ].join("\n")
             console.log(bandsintownInfoArray)
+            // Append showData and the divider to log.txt, print showData to the console
+   fs.appendFile("log.txt", bandsintownInfoArray + divider, function(err) {
+    if (err) throw err;
+  });
         } else {
             console.log('Error occurred: ' + error);
 
@@ -110,7 +129,7 @@ function BandsInTown(search) {
 
     });
 }
-
+// function to receive inputs from random.txt file and then execute a function based on the input
 function do_what_it_says() {
     fs.readFile("random.txt", "utf8", function (err, data) {
         if (err) {
@@ -127,7 +146,5 @@ function do_what_it_says() {
         }
 
     });
-
-
 }
 
