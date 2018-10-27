@@ -43,3 +43,22 @@ Actors : Eddie Murphy, Janet Jackson, Larry Miller, John Ales
 Log Time :October 27th 2018, 7:38:33 am
 ------------------------------------------------------------
 
+Artists: Backstreet Boys
+Name of song: Shape of My Heart
+Album: Black & Blue
+
+Log Time :October 27th 2018, 8:14:12 am
+------------------------------------------------------------
+
+Title : The Avengers
+Year movie released : 2012
+The movie's rating is  : 8.1
+Rotten Tomatoes Ratings: 92%
+Country : USA
+Language : English, Russian, Hindi
+Plot : Earth's mightiest heroes must come together and learn to fight as a team if they are going to stop the mischievous Loki and his alien army from enslaving humanity.
+Actors : Robert Downey Jr., Chris Evans, Mark Ruffalo, Chris Hemsworth
+
+Log Time :October 27th 2018, 8:14:27 am
+------------------------------------------------------------
+

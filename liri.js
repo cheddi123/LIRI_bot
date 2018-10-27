@@ -14,19 +14,20 @@ var input1 = process.argv[2];
 
 // Store all of the arguments in an array
 var nodeArgs = process.argv;
-var input2 = ''
+var input2 = nodeArgs.slice(3).join(' ')
+
 // Loop through all the words in the node argument
 // And do a little for-loop magic to handle the inclusion of "+"s
-for (var i = 3; i < nodeArgs.length; i++) {
+// for (var i = 3; i < nodeArgs.length; i++) {
 
-    if (i > 3 && i < nodeArgs.length) {
+//     if (i > 3 && i < nodeArgs.length) {
 
-        input2 = input2 + "+" + nodeArgs[i];
-    }
-    else {
-        input2 += nodeArgs[i];
-    }
-}
+//         input2 = input2 + "+" + nodeArgs[i];
+//     }
+//     else {
+//         input2 += nodeArgs[i];
+//     }
+// }
 
 // switch statement to receive different input calls
 switch (input1) {
