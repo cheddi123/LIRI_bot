@@ -28,18 +28,14 @@ for (var i = 3; i < nodeArgs.length; i++) {
     }
 }
 
-if (input1 === "movie-this") {
-    ombd(input2);
 
-} else if (input1 === "spotify-this") {
-    songify(input2)
-} else if (input1 === "concert-this") {
-    BandsInTown(input2)
-}else if (input1==="do-what-it-says"){
-      do_what_it_says(input1,input2)
+switch(input1){
+    case "movie-this": ombd(input2);break;
+    case "spotify-this":songify(input2);break;
+    case "concert-this" : BandsInTown(input2);break;
+    case "do-what-it-says": do_what_it_says();break;
+    default: console.log("Invalid Response")
 }
-
-
 
 
 
@@ -49,12 +45,12 @@ function songify(search) {
         if (err) {
             return console.log('Error occurred: ' + err);
         }
-        var searching =  data.tracks.items[0]
+        var searching = data.tracks.items[0]
         var artistinfoArray = [
             "Artists: " + searching.artists[0].name,
             "Name of song: " + searching.name,
             "Album: " + searching.album.name,
-            
+
         ].join("\n");
 
         console.log(artistinfoArray)
@@ -101,30 +97,37 @@ function BandsInTown(search) {
         var convertDate = moment(date, "YYYY/MM/DD").format("MM/DD/YYYY");
         if (!error && response.statusCode === 200 && search) {
 
-        var bandsintownInfoArray = [
-            "Name of venue: " + data[0].venue.name,
-            "Name of city: " + data[0].venue.city,
-            "Date of Event: " + convertDate
-        ].join("\n")
-        console.log(bandsintownInfoArray)
-    }else{ console.log('Error occurred: ' + error);
+            var bandsintownInfoArray = [
+                "Name of venue: " + data[0].venue.name,
+                "Name of city: " + data[0].venue.city,
+                "Date of Event: " + convertDate
+            ].join("\n")
+            console.log(bandsintownInfoArray)
+        } else {
+            console.log('Error occurred: ' + error);
 
-    }
+        }
 
     });
 }
 
- function do_what_it_says (){
-    fs.readFile("random.txt","utf8",function(err, data){
-        if (err){ 
-			return console.log(err);
-		}
+function do_what_it_says() {
+    fs.readFile("random.txt", "utf8", function (err, data) {
+        if (err) {
+            return console.log(err);
+        }
 
-		var dataArr = data.split(',');
-      var command2 =dataArr[0]
-	  var command3= dataArr[3]
-	});
+        var dataArr = data.split(',');
 
-    
- }
+        // console.log(dataArr[0],dataArr[1])
+        if (dataArr[0] === "spotify-this-song") {
+            songify(dataArr[1])
+        }else if(dataArr[0]==="movie-this"){
+            ombd(dataArr[1])
+        }
+
+    });
+
+
+}
 
