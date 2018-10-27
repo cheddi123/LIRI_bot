@@ -1,4 +1,4 @@
- require("dotenv").config();
+require("dotenv").config();
 var keys = require("./keys.js")
 var Spotify = require('node-spotify-api');
 var moment = require('moment');
@@ -6,10 +6,11 @@ var request = require("request");
 var fs = require("fs");
 var bandsintown = require("bandsintown")
 
-   // `divider` will be used as a spacer between the data we print in log.txt
-   var divider = "\n------------------------------------------------------------\n\n";
+// `divider` will be used as a spacer between the data we print in log.txt
+var divider = "\n------------------------------------------------------------\n\n";
 
-var input1 = process.argv[2]; 
+var moment2 = moment().format('MMMM Do YYYY, h:mm:ss a')
+var input1 = process.argv[2];
 
 // Store all of the arguments in an array
 var nodeArgs = process.argv;
@@ -21,7 +22,6 @@ for (var i = 3; i < nodeArgs.length; i++) {
     if (i > 3 && i < nodeArgs.length) {
 
         input2 = input2 + "+" + nodeArgs[i];
-
     }
     else {
         input2 += nodeArgs[i];
@@ -29,11 +29,11 @@ for (var i = 3; i < nodeArgs.length; i++) {
 }
 
 // switch statement to receive different input calls
-switch(input1){
-    case "movie-this": ombd(input2);break;
-    case "spotify-this":songify(input2);break;
-    case "concert-this" : BandsInTown(input2);break;
-    case "do-what-it-says": do_what_it_says();break;
+switch (input1) {
+    case "movie-this": ombd(input2); break;
+    case "spotify-this": songify(input2); break;
+    case "concert-this": BandsInTown(input2); break;
+    case "do-what-it-says": do_what_it_says(); break;
     default: console.log("Invalid Response")
 }
 
@@ -43,8 +43,8 @@ function songify(search) {
     var spotify = new Spotify(keys.spotify);
     spotify.search({ type: 'track', query: search }, function (err, data) {
         if (err) {
-            return console.log('Error occurred: ' + err , songify("The Sign"));
-            
+            return console.log('Error occurred: ' + err, songify("The Sign"));
+
         }
 
         var searching = data.tracks.items[0]
@@ -55,15 +55,15 @@ function songify(search) {
 
         ].join("\n");
         console.log(artistinfoArray)
-      
-   // Append showData and the divider to log.txt, print showData to the console
-   fs.appendFile("log.txt", artistinfoArray + divider, function(err) {
-    if (err) throw err;
-  });
-        
+
+        // Append showData and the divider to log.txt, print showData to the console
+        fs.appendFile("log.txt", artistinfoArray + "\n\n" + "Log Time :" + moment2 + divider, function (err) {
+            if (err) throw err;
+        });
+
 
     });
-    
+
 }
 
 
@@ -85,13 +85,13 @@ function ombd(search) {
                 "Language : " + JSON.parse(body).Language,
                 "Plot : " + JSON.parse(body).Plot,
                 "Actors : " + JSON.parse(body).Actors,
-            ].join("\n\n")
+            ].join("\n")
             console.log(movieinfoArray);
             // Append showData and the divider to log.txt, print showData to the console
-   fs.appendFile("log.txt", movieinfoArray + divider, function(err) {
-    if (err) throw err;
-  });
-           
+            fs.appendFile("log.txt", movieinfoArray + "\n\n" + "Log Time :" + moment2 + divider, function (err) {
+                if (err) throw err;
+            });
+
 
         } else {
 
@@ -104,7 +104,7 @@ function ombd(search) {
 // function to get information about bands in town
 function BandsInTown(search) {
     var bandKey = keys.bands_in_town
-    var URL = "https://rest.bandsintown.com/artists/" + search + "/events?app_id="+bandKey;
+    var URL = "https://rest.bandsintown.com/artists/" + search + "/events?app_id=" + bandKey;
     request(URL, function (error, response, body) {
         var data = JSON.parse(body)
         //    console.log(data)
@@ -119,9 +119,9 @@ function BandsInTown(search) {
             ].join("\n")
             console.log(bandsintownInfoArray)
             // Append showData and the divider to log.txt, print showData to the console
-   fs.appendFile("log.txt", bandsintownInfoArray + divider, function(err) {
-    if (err) throw err;
-  });
+            fs.appendFile("log.txt", bandsintownInfoArray + "\n\n" + "Log Time :" + moment2 + divider, function (err) {
+                if (err) throw err;
+            });
         } else {
             console.log('Error occurred: ' + error);
 
@@ -141,8 +141,10 @@ function do_what_it_says() {
         // console.log(dataArr[0],dataArr[1])
         if (dataArr[0] === "spotify-this-song") {
             songify(dataArr[1])
-        }else if(dataArr[0]==="movie-this"){
+        } else if (dataArr[0] === "movie-this") {
             ombd(dataArr[1])
+        }else if(dataArr[0]==="concert-this") {
+            BandsInTown(dataArr[1])
         }
 
     });
